@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>从一颗电子到一个 AI 系统 · 七块知识大白话手册</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f6f7f9;
+    --card:#ffffff;
+    --ink:#1a1f26;
+    --ink2:#4a5464;
+    --ink3:#7b8798;
+    --line:#e4e8ee;
+    --blue:#2563eb;
+    --blue-bg:#eef3ff;
+    --green:#0f8a5f;
+    --green-bg:#eaf7f1;
+    --amber:#a86500;
+    --amber-bg:#fdf4e3;
+    --red:#c23b3b;
+    --red-bg:#fdeceb;
+    --purple:#6d4aff;
+    --purple-bg:#f1eeff;
+  }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    font-size:15.5px;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .layout{display:flex;align-items:flex-start;max-width:1240px;margin:0 auto;gap:32px;padding:0 24px}
+
+  /* 目录 */
+  .toc{
+    position:sticky;top:0;flex:0 0 208px;align-self:flex-start;
+    max-height:100vh;overflow-y:auto;padding:32px 0 40px;
+  }
+  .toc h4{font-size:12px;letter-spacing:.12em;color:var(--ink3);font-weight:600;margin-bottom:14px}
+  .toc a{
+    display:block;color:var(--ink2);text-decoration:none;font-size:13.5px;
+    padding:5px 10px;border-left:2px solid transparent;border-radius:0 4px 4px 0;transition:.15s;
+  }
+  .toc a:hover{color:var(--blue);background:var(--blue-bg);border-left-color:var(--blue)}
+  .toc a .n{display:inline-block;width:20px;color:var(--ink3);font-variant-numeric:tabular-nums}
+
+  main{flex:1;min-width:0;padding:32px 0 100px}
+
+  /* 封面 */
+  .hero{
+    background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#4f46e5 100%);
+    color:#fff;border-radius:16px;padding:38px 36px;margin-bottom:28px;
+  }
+  .hero h1{font-size:29px;line-height:1.35;font-weight:700;letter-spacing:-.3px}
+  .hero p{margin-top:14px;color:#c7d6fb;font-size:14.5px;line-height:1.9}
+  .hero .tags{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+  .hero .tags span{
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+    padding:4px 11px;border-radius:100px;font-size:12.5px;color:#e8eefc;
+  }
+
+  /* 章节 */
+  section{margin-bottom:38px}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .sec-num{
+    flex:0 0 34px;height:34px;border-radius:9px;background:var(--blue);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
+    font-variant-numeric:tabular-nums;
+  }
+  .sec-head h2{font-size:22px;font-weight:700;letter-spacing:-.2px}
+  .sec-sub{color:var(--ink3);font-size:13.5px;margin:0 0 18px 46px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+
+  p{margin:10px 0;color:var(--ink2)}
+  p b,li b{color:var(--ink);font-weight:600}
+
+  /* 名词条 */
+  .term{display:block;margin:0 0 2px}
+  .term-name{font-weight:700;color:var(--ink);font-size:15px}
+  .term-name .en{font-weight:400;color:var(--ink3);font-size:12.5px;margin-left:6px;font-family:ui-monospace,Consolas,monospace}
+  .term-body{color:var(--ink2);font-size:14.8px;margin-top:2px}
+  .term + .term{margin-top:13px;padding-top:13px;border-top:1px dashed #eef1f5}
+
+  /* 比喻块 */
+  .analogy{
+    background:var(--amber-bg);border-left:3px solid #e0a53c;
+    padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14.5px;color:#6b4a08;
+  }
+  .analogy b{color:#4a3200}
+  .use{
+    background:var(--green-bg);border-left:3px solid #2f9e73;
+    padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14.5px;color:#0d5f42;
+  }
+  .use b{color:#08402d}
+  .warn{
+    background:var(--red-bg);border-left:3px solid #d96b6b;
+    padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14.5px;color:#8c2b2b;
+  }
+  .warn b{color:#6b1d1d}
+
+  /* 表格 */
+  .tw{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
+  th{background:#f8fafc;text-align:left;font-weight:600;color:var(--ink);padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:13.5px}
+  td{padding:10px 14px;border-bottom:1px solid #f1f4f8;color:var(--ink2);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  .mono{font-family:ui-monospace,Consolas,monospace;font-size:12.8px;color:var(--blue);font-weight:400}
+
+  /* 流程条 */
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0}
+  .flow .step{
+    background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 13px;
+    font-size:13.2px;color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.04);
+  }
+  .flow .step small{display:block;color:var(--ink3);font-size:11.5px;margin-top:2px}
+  .flow .arw{color:#c2cad6;font-size:15px;padding:0 1px}
+
+  /* 分层图 */
+  .layers{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+  .layer{
+    display:flex;align-items:center;gap:14px;border-radius:8px;padding:11px 16px;
+    border:1px solid var(--line);background:#fff;
+  }
+  .layer .tag{
+    flex:0 0 auto;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:5px;
+    font-family:ui-monospace,Consolas,monospace;
+  }
+  .layer .txt{font-size:13.8px;color:var(--ink2)}
+  .layer .txt b{color:var(--ink)}
+  .l1 .tag{background:var(--purple-bg);color:var(--purple)}
+  .l2 .tag{background:var(--blue-bg);color:var(--blue)}
+  .l3 .tag{background:var(--green-bg);color:var(--green)}
+  .l4 .tag{background:var(--amber-bg);color:var(--amber)}
+
+  /* 金字塔（数仓分层） */
+  .pyramid{display:flex;flex-direction:column;align-items:center;gap:6px;margin:18px 0}
+  .pyramid div{
+    border-radius:7px;padding:11px 18px;font-size:13.6px;text-align:center;
+    border:1px solid var(--line);background:#fff;color:var(--ink2);
+  }
+  .pyramid div b{color:var(--ink)}
+
+  ul,ol{margin:10px 0 10px 20px;color:var(--ink2)}
+  li{margin:6px 0;font-size:14.8px}
+
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  @media(max-width:860px){
+    .layout{flex-direction:column;padding:0 16px}
+    .toc{position:static;flex:none;width:100%;max-height:none;padding:20px 0 0}
+    .kv{grid-template-columns:1fr}
+    .hero{padding:26px 22px}
+    .hero h1{font-size:23px}
+    main{padding-top:20px}
+  }
+  .mini{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .mini h5{font-size:13.5px;color:var(--ink);margin-bottom:5px}
+  .mini p{margin:0;font-size:13.6px;color:var(--ink2);line-height:1.75}
+
+  .end{border-top:1px solid var(--line);margin-top:40px;padding-top:20px;color:var(--ink3);font-size:13px;text-align:center}
+  .hl{background:linear-gradient(transparent 62%,#fde68a 62%);padding:0 1px;color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="toc">
+  <h4>目录</h4>
+  <a href="#p0"><span class="n">·</span>先看这张地图</a>
+  <a href="#p1"><span class="n">1</span>计算机组成原理</a>
+  <a href="#p2"><span class="n">2</span>数据结构</a>
+  <a href="#p3"><span class="n">3</span>计算机网络</a>
+  <a href="#p4"><span class="n">4</span>单片机</a>
+  <a href="#p5"><span class="n">5</span>AI 是怎么做出来的</a>
+  <a href="#p6"><span class="n">6</span>Transformer 拆开看</a>
+  <a href="#p7"><span class="n">7</span>数据仓库怎么搭</a>
+  <a href="#p8"><span class="n">8</span>七块知识串成一条线</a>
+  <a href="#p9"><span class="n">9</span>热词速查表</a>
+  <a href="#p10"><span class="n">10</span>学习顺序建议</a>
+</aside>
+
+<main>
+
+<div class="hero">
+  <h1>从一颗电子，到一个会思考的系统<br>——七块知识，全部说人话</h1>
+  <p>这篇不讲考试，只讲一件事：<b style="color:#fff">这七样东西各自是干什么用的、为什么必须存在、你在生活里哪一秒正在被它服务。</b>每个词都先给一个大白话解释，再给一个你摸得着的例子。看不懂的地方，一定是我的问题，不是你的问题。</p>
+  <div class="tags">
+    <span>计算机组成</span><span>数据结构</span><span>计算机网络</span><span>单片机</span>
+    <span>AI 原理</span><span>Transformer</span><span>数据仓库</span>
+  </div>
+</div>
+
+<!-- ============ 0 ============ -->
+<section id="p0">
+  <div class="sec-head"><div class="sec-num">0</div><h2>先看这张地图，别一上来就迷路</h2></div>
+  <p class="sec-sub">七块知识不是七个孤岛，是一条链子上的七个环节。</p>
+
+  <div class="card">
+    <p>很多人学这些学不明白，不是因为笨，是因为<b>没人告诉他这玩意儿在整个系统里的位置</b>。就像你拆开一台车，看见螺丝、皮带、火花塞，每个都认识，但不知道车怎么跑起来的。</p>
+    <p>所以先用一条线串起来：</p>
+    <div class="flow">
+      <div class="step">电<br><small>晶体管开关</small></div><span class="arw">→</span>
+      <div class="step">算<br><small>组成原理</small></div><span class="arw">→</span>
+      <div class="step">摆<br><small>数据结构</small></div><span class="arw">→</span>
+      <div class="step">跑<br><small>计算机网络</small></div><span class="arw">→</span>
+      <div class="step">碰<br><small>单片机</small></div><span class="arw">→</span>
+      <div class="step">学<br><small>AI</small></div><span class="arw">→</span>
+      <div class="step">懂<br><small>Transformer</small></div><span class="arw">→</span>
+      <div class="step">记<br><small>数据仓库</small></div>
+    </div>
+    <p>翻译成人话：<span class="hl">电变成算力 → 数据要摆得聪明 → 数据要跑得动 → 代码要能摸到现实世界 → 机器要能自己找规律 → 最强的那类模型长什么样 → 攒下来的数据怎么变成能看能决策的东西。</span></p>
+    <div class="analogy"><b>一句话比喻：</b>组成原理是<b>肌肉和神经</b>，数据结构是<b>整理房间的方法</b>，网络是<b>血管</b>，单片机是<b>手和眼睛</b>，AI 是<b>大脑</b>，Transformer 是<b>大脑里最关键的那块皮层</b>，数据仓库是<b>记忆和账本</b>。</div>
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section id="p1">
+  <div class="sec-head"><div class="sec-num">1</div><h2>计算机组成原理：机器到底是怎么“动”起来的</h2></div>
+  <p class="sec-sub">这一章只回答一个问题：一块沙子做的芯片，凭什么能算数、能放视频。</p>
+
+  <div class="card">
+    <div class="analogy"><b>整章用一个比喻：</b>把电脑想成<b>一家工厂</b>。有工人、有工位、有手边的小料盒、有车间货架、有厂外仓库、有传送带、有节拍器。所有名词都是这家工厂里的一件东西。</div>
+
+    <div class="term">
+      <span class="term-name">晶体管<span class="en">Transistor</span></span>
+      <div class="term-body">一个<b>能被电控制通断的开关</b>。通电代表 1，断电代表 0。一颗现代芯片里塞了几百亿个。它本身什么都不会，但堆多了就能表达一切。<b>作用：</b>它是整个数字世界的原子。没有它，就没有 0 和 1。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">门电路 / 逻辑门<span class="en">Logic Gate</span></span>
+      <div class="term-body">几个晶体管搭在一起，能做“两个都满足才输出 1”（与）、“满足一个就输出 1”（或）、“反过来”（非）。<b>作用：</b>把开关变成“判断”。所有加法、比较、判断，本质上都是这几种门在组合。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">二进制<span class="en">Binary</span></span>
+      <div class="term-body">只用 0 和 1 计数。人用十进制是因为有十根手指，机器用二进制是因为开关只有两个状态，最不容易出错。<b>作用：</b>让“电”能表示“数”，再让“数”表示文字、图片、声音——一切都是编号。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">ALU 算术逻辑单元<span class="en">Arithmetic Logic Unit</span></span>
+      <div class="term-body">CPU 里真正“算”的那个工位，负责加减乘除和比较大小。<b>作用：</b>所有计算最终落到它身上。你写的 <span class="mono">a + b</span>，最后就是它在通电。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">寄存器<span class="en">Register</span></span>
+      <div class="term-body">CPU 手边几个仅有的小抽屉，一共就几十个，每个装一个数。<b>速度最快，容量最小。</b><b>作用：</b>ALU 要算的数和算完的结果，必须先放这里。CPU 只能对寄存器里的东西动手。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">缓存 Cache（L1 / L2 / L3）</span>
+      <div class="term-body">工位旁边的<b>小书架</b>。比抽屉远一点，比仓库近得多。L1 几 KB 且只有一两个周期，L3 几十 MB 要走十几个周期。<b>作用：</b>CPU 每秒能算几十亿次，内存却慢一个数量级。缓存就是用来“垫住这个速度差”的，否则 CPU 大部分时间在干等。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">内存 RAM<span class="en">Memory</span></span>
+      <div class="term-body">车间地面上的<b>大料架</b>。容量大（8G/16G/32G），通电才记得住，一断电全忘。<b>作用：</b>装正在运行的程序和数据。你开的微信、浏览器、游戏，全摊在这里。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">硬盘 / 固态硬盘<span class="en">HDD / SSD</span></span>
+      <div class="term-body">厂外的<b>仓库</b>。容量极大、断电还在、但取东西慢。<b>作用：</b>长期保存。你的照片、系统、代码都在这。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">总线<span class="en">Bus</span></span>
+      <div class="term-body">厂区里的<b>传送带和通道</b>，CPU 和内存、硬盘、显卡之间的所有搬运都走它。<b>作用：</b>决定了“搬东西”的上限。通道窄，零件再快也供不上。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">指令集<span class="en">ISA，如 x86 / ARM</span></span>
+      <div class="term-body">工人能听懂的<b>指令手册</b>。同一个意思，x86 和 ARM 说的是两种方言。<b>作用：</b>决定一个程序能不能在这台机器上跑。你手机（ARM）装不了电脑（x86）的 exe，就是这个原因。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">时钟频率<span class="en">Clock，GHz</span></span>
+      <div class="term-body">车间的<b>节拍器</b>，3GHz 就是每秒三十亿拍，每拍大家动一下。<b>作用：</b>给所有零件对表。但注意——<b>频率高≠更快</b>，还要看每一拍干几件事（IPC）、缓存够不够、会不会卡在等内存上。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">流水线<span class="en">Pipeline</span></span>
+      <div class="term-body">把“取指令 → 译码 → 执行 → 写回”拆成四道工序，像流水线一样同时开工。<b>作用：</b>不用等一条指令全做完才做下一条，吞吐量翻几倍。代价是遇到“跳转”可能白干一场（分支预测失败）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">冯·诺依曼结构<span class="en">von Neumann</span></span>
+      <div class="term-body">“程序和数据放在同一个仓库里”的设计。<b>作用：</b>这是电脑能“通用”的根本——换个程序，同一台机器就能干完全不同的事。代价是取指令和取数据抢同一条通道，叫“冯·诺依曼瓶颈”。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">GPU 显卡<span class="en">Graphics Processing Unit</span></span>
+      <div class="term-body">CPU 像<b>8 个博士</b>，能做复杂推理但人少；GPU 像<b>几千个小学生</b>，只会简单加减但能同时开工。<b>作用：</b>图像每个像素、矩阵每个元素的计算方式都一样，正好适合“人海战术”。这就是为什么训练 AI 必须用显卡，而不是 CPU。</div>
+    </div>
+
+    <div class="use"><b>用在哪（你每天都在碰）：</b>
+      <br>· 手机开了二十个 App 之后开始卡 → 内存不够，系统把不用的内容往存储里搬（swap），来回搬就卡。
+      <br>· 玩 3A 游戏必须好显卡 → 每帧几百万个像素要同时上色，全靠 GPU 并行。
+      <br>· 同一段代码，改一下数据访问顺序就快 10 倍 → 因为原本每个数都要跑去内存拿，现在都待在缓存里。
+      <br>· AI 服务器为什么贵得离谱 → 贵在显存和算力，不是贵在“智能”。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="p2">
+  <div class="sec-head"><div class="sec-num">2</div><h2>数据结构：数据怎么“摆”，决定你快不快</h2></div>
+  <p class="sec-sub">同样一万条数据，摆放方式不同，取用速度能差几万倍。就这么现实。</p>
+
+  <div class="card">
+    <div class="analogy"><b>整章比喻：</b>你家有 1000 件东西。全堆在地上（乱放）、按编号排进连号柜子、每人手里拿着下一个人地址（链条）、按名字首字母分格（哈希）、按类别做成树状目录——<b>找同一件东西的时间，天差地别</b>。数据结构研究的就是“怎么摆”。</div>
+
+    <div class="term">
+      <span class="term-name">数组<span class="en">Array</span></span>
+      <div class="term-body">一排<b>连号的储物柜</b>，1 号在 2 号旁边，地址是算出来的。<b>作用：</b>知道编号就能直接开柜门（第 500 号一秒钟到），但中间插一件，后面全部要挪位。<b>特点：查得快，改得慢。</b></div>
+    </div>
+    <div class="term">
+      <span class="term-name">链表<span class="en">Linked List</span></span>
+      <div class="term-body">每个人手里<b>拿着下一个人的地址</b>，不挨着站。<b>作用：</b>加人、走人都只改两个人的手，特别省事；但找第 500 个得一个个问过去。<b>特点：改得快，查得慢。</b></div>
+    </div>
+    <div class="term">
+      <span class="term-name">栈<span class="en">Stack，后进先出</span></span>
+      <div class="term-body">一摞<b>盘子</b>，最后放上去的最先拿走。<b>作用：</b>处理“必须原路返回”的事情。<b>典型场景：</b>Ctrl+Z 撤销（撤销最近一步）、浏览器的后退、程序里函数调用（A 调 B，B 调 C，C 先结束）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">队列<span class="en">Queue，先进先出</span></span>
+      <div class="term-body">排队<b>买奶茶</b>，先来的先做。<b>作用：</b>处理“要按顺序、不能插队、还不能把人挤爆”的事情。<b>典型场景：</b>打印机任务、双十一订单排队入库、<b>消息队列</b>（秒杀一瞬间来 100 万请求，先塞进队列慢慢消化，不然服务器直接躺）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">哈希表<span class="en">Hash Table</span></span>
+      <div class="term-body">给每个名字算一个<b>柜号</b>（哈希函数），直接跳过去取，不用翻。<b>作用：</b>查东西接近“瞬间”。代价是柜子会撞车（两个名字算出同一个号），需要一套冲突处理；装太满了还要整体扩建（rehash），那一下很慢。<b>典型场景：</b>字典查词、手机通讯录按名字找人、网站把网址映射到 IP、缓存。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">树 / 二叉搜索树 / 平衡树<span class="en">Tree / BST / AVL / Red-Black</span></span>
+      <div class="term-body">像<b>公司组织架构</b>，一层层往下找，每往下一层范围砍一半。左小右大是二叉搜索树；树长歪了（变成一条线）就退化成链表，所以要用平衡树自动调整。<b>作用：</b>有序数据的快速查找、插入、范围查询。<b>典型场景：</b>文件目录、数据库索引、代码里的有序集合（C++ map / Java TreeMap）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">B+ 树<span class="en">B+ Tree</span></span>
+      <div class="term-body">专门为“硬盘”设计的<b>矮胖树</b>：一个节点塞几百上千个 key，三层就能管住几千万行数据。<b>作用：</b>硬盘一次读一大块最划算，所以节点要胖；层数少就少读几次盘。<b>这就是为什么数据库几亿行还能毫秒级查出一条记录</b>——没建索引，它就得一行行扫（全表扫描），几秒都出不来。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">堆<span class="en">Heap，优先队列</span></span>
+      <div class="term-body">只保证一件事：<b>最上面那个永远是最大（或最小）的</b>，下面谁大谁小不管。<b>作用：</b>随时要“当前最大/最小的几个”时极快。<b>典型场景：</b>游戏排行榜 Top 10、任务调度里“最紧急的先做”、导航算法里“先走最近的点”。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">图<span class="en">Graph</span></span>
+      <div class="term-body"><b>点 + 连线</b>，专门表达“关系”。谁能到谁、多远、多贵都行。<b>作用：</b>处理网络型问题。<b>典型场景：</b>地图导航算最短路线、外卖派单、社交平台“你可能认识的人”、微服务之间的调用依赖、地铁换乘。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">时间复杂度 O(…)<span class="en">Big-O</span></span>
+      <div class="term-body">衡量“数据量翻倍时，耗时会怎么涨”的尺子，不是测秒数。<br>
+      <span class="mono">O(1)</span> 常数：多少数据都一样快（哈希查表）<br>
+      <span class="mono">O(log n)</span> 每步砍一半：100 万条只要 20 步（二分查找、B+ 树）<br>
+      <span class="mono">O(n)</span> 一条条过：100 万条就 100 万步（遍历）<br>
+      <span class="mono">O(n log n)</span> 好排序的下限<br>
+      <span class="mono">O(n²)</span> 双重循环：100 万条就是 1 万亿步，<b>直接不可能跑完</b><br>
+      <b>作用：</b>让你在写代码前就知道会不会崩，而不是上线后被老板骂。</div>
+    </div>
+
+    <div class="use"><b>用在哪：</b>
+      <br>· Ctrl+Z 撤销 → 栈　· 打印机排队、双十一削峰 → 队列
+      <br>· 微信通讯录搜人名、网址查 IP → 哈希表
+      <br>· 聊天记录往上翻页、文件夹层级 → 树
+      <br>· 排行榜、抢红包“最快的那个先得” → 堆
+      <br>· 高德算最快路线、抖音推荐关系 → 图
+      <br>· 数据库不建索引慢 100 倍 → 因为它从 B+ 树退化成了全表扫
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="p3">
+  <div class="sec-head"><div class="sec-num">3</div><h2>计算机网络：数据是怎么从 A 跑到 B 的</h2></div>
+  <p class="sec-sub">你可能没意识到，你每点一次手机，背后是几十台机器在接力。</p>
+
+  <div class="card">
+    <div class="analogy"><b>整章比喻：</b>寄快递。<b>分层</b>就是一层管一件事：你说的内容（应用层）、怎么保证送到（传输层）、写地址选路线（网络层）、真正在路上跑的车（链路/物理层）。每一层只管自己那摊事，只跟对面同层对话。这就是网络为什么能这么复杂还不乱。</div>
+
+    <h4 style="font-size:15px;margin:20px 0 10px">先看四层，一眼就懂</h4>
+    <div class="layers">
+      <div class="layer l1"><span class="tag">应用层</span><div class="txt"><b>HTTP / HTTPS / DNS / SMTP / WebSocket</b> —— 你说的“话”本身：“我要这个网页”“我要发这封邮件”</div></div>
+      <div class="layer l2"><span class="tag">传输层</span><div class="txt"><b>TCP / UDP</b> —— 怎么送：挂号信（必到、可查）还是明信片（快、丢了不管）</div></div>
+      <div class="layer l3"><span class="tag">网络层</span><div class="txt"><b>IP / 路由</b> —— 门牌号和路线：从北京到深圳，走哪几站中转</div></div>
+      <div class="layer l4"><span class="tag">链路 / 物理层</span><div class="txt"><b>以太网 / Wi-Fi / 光纤 / 4G-5G</b> —— 真正跑的车：网线、无线电波、光</div></div>
+    </div>
+
+    <div class="term">
+      <span class="term-name">IP 地址<span class="en">IPv4 / IPv6</span></span>
+      <div class="term-body">互联网上的<b>门牌号</b>。IPv4 只有约 42 亿个，早就分完了，所以有了 NAT 和 IPv6。<b>作用：</b>全球定位一台设备。没有它，你的数据不知道往哪送。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">端口<span class="en">Port</span></span>
+      <div class="term-body">门牌号后面的<b>房间号</b>。一台服务器只有 1 个 IP，但能同时跑网站、邮件、数据库。<b>作用：</b>区分同一台机器上的不同服务。80/443 是网页，22 是远程登录，3306 是 MySQL，6379 是 Redis。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">DNS<span class="en">Domain Name System</span></span>
+      <div class="term-body">互联网的<b>电话簿</b>，把 <span class="mono">www.taobao.com</span> 翻译成 <span class="mono">203.x.x.x</span>。<b>作用：</b>人记名字，机器认数字。DNS 一慢，全网页都在转圈——这就是“网络没问题但网站打不开”的常见原因。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">TCP<span class="en">Transmission Control Protocol</span></span>
+      <div class="term-body"><b>可靠传输</b>。发之前先三次握手确认“你在吗、我在、好开始”；每发一段要对方回执，丢了就重发，顺序乱了帮你排好。<b>作用：</b>保证一个字都不少。代价是慢一点。<b>用在：</b>网页、文件下载、转账、聊天消息。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">UDP<span class="en">User Datagram Protocol</span></span>
+      <div class="term-body"><b>发了就不管</b>，不握手、不重发、不排序。<b>作用：</b>极快、极省。丢一两帧你根本看不出来，但卡一下你就抓狂——所以直播、视频通话、在线游戏、DNS 查询都用它。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">HTTP / 状态码<span class="en">HyperText Transfer Protocol</span></span>
+      <div class="term-body">网页的<b>点菜话术</b>。GET 是“我要”，POST 是“我交给你”，PUT/DELETE 是改和删。<br>
+      状态码：<span class="mono">200</span> 成功、<span class="mono">301/302</span> 搬家了、<span class="mono">403</span> 你没权限、<span class="mono">404</span> 没这东西、<span class="mono">500</span> 服务器自己崩了。<b>作用：</b>让全世界几十亿台机器用同一套语言说话。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">HTTPS / TLS<span class="en">加密</span></span>
+      <div class="term-body">HTTP 外面套了一层<b>加密信封</b>。<b>作用：</b>三件事——防偷看（别人抓包只看到乱码）、防篡改（改一个字节就验不过）、防冒充（证书证明“这真是淘宝”）。浏览器地址栏那个小锁就是它。没有它，你在咖啡店连 Wi-Fi 输密码等于广播。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">Cookie / Session / Token<span class="en">登录态</span></span>
+      <div class="term-body">网站怎么记住“你已经登录了”。HTTP 本身是<b>失忆的</b>，每次请求都像第一次见面。<br>
+      Cookie = 服务器塞给你浏览器的一张<b>小纸条</b>；Session = 服务器自己留档的<b>档案</b>；Token（如 JWT）= 一张<b>自带签名的通行证</b>，服务器不用查档也能验。<b>作用：</b>不让你每个页面都重新登录一次。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">路由器 / 交换机<span class="en">Router / Switch</span></span>
+      <div class="term-body">交换机 = 房间里的<b>插线板</b>，管同一张局域网内的分发；路由器 = <b>路口交警</b>，决定跨网络往哪个方向走。<b>作用：</b>一个管“内部送达”，一个管“出门问路”。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">NAT<span class="en">网络地址转换</span></span>
+      <div class="term-body">让全家十几台设备<b>共用一个公网 IP</b> 出门，回来时再按小本本分给各台。<b>作用：</b>缓解 IP 不够用，顺便挡住外面的主动连接（你家电脑默认外面进不来）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">CDN<span class="en">内容分发网络</span></span>
+      <div class="term-body">把视频、图片提前<b>复制到离你最近的仓库</b>（边缘节点）。<b>作用：</b>你在广州看视频，不会跑去北京的服务器拿数据。这就是为什么同一个视频，国外网站卡、国内平台秒开。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">带宽 / 延迟 / 丢包<span class="en">Bandwidth / Latency / Loss</span></span>
+      <div class="term-body"><b>带宽</b>=管子有多粗（一次能过多少）；<b>延迟</b>=路上要多久（ping 值）；<b>丢包</b>=掉了几件（要重发，表现为“卡一下”）。<b>作用：</b>下载电影看带宽，打游戏看延迟，视频通话看丢包。三个是不同的事，别混。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">防火墙 / VPN / 代理<span class="en">Firewall / VPN / Proxy</span></span>
+      <div class="term-body">防火墙 = <b>门卫</b>，按规则放行或拦下；VPN = <b>加密隧道</b>，让你像在公司内网一样访问；代理 = <b>找个中间人代办</b>，你的请求先给它，它再帮你转。<b>作用：</b>安全隔离和访问控制。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">WebSocket<span class="en">长连接</span></span>
+      <div class="term-body">普通的 HTTP 是“你问一句我答一句”，说完就挂。WebSocket 是<b>打通电话不挂</b>，双方随时能说话。<b>作用：</b>聊天室、股票行情、协同编辑、游戏——需要服务器主动推给你的场景。</div>
+    </div>
+
+    <h4 style="font-size:15px;margin:22px 0 10px">经典中的经典：地址栏敲下回车，0.3 秒里发生了什么</h4>
+    <div class="flow">
+      <div class="step">1 查缓存<br><small>本机有没有存过</small></div><span class="arw">→</span>
+      <div class="step">2 DNS<br><small>域名换 IP</small></div><span class="arw">→</span>
+      <div class="step">3 TCP 握手<br><small>确认能通</small></div><span class="arw">→</span>
+      <div class="step">4 TLS 握手<br><small>换密钥</small></div><span class="arw">→</span>
+      <div class="step">5 发请求<br><small>带 Cookie</small></div><span class="arw">→</span>
+      <div class="step">6 到机房<br><small>路由 / CDN / 负载均衡</small></div><span class="arw">→</span>
+      <div class="step">7 查库<br><small>缓存优先</small></div><span class="arw">→</span>
+      <div class="step">8 回 HTML</div><span class="arw">→</span>
+      <div class="step">9 再要图/CSS/JS<br><small>几十个并发</small></div><span class="arw">→</span>
+      <div class="step">10 渲染<br><small>布局+绘制</small></div>
+    </div>
+    <div class="use"><b>看懂这条链有什么用：</b>网站慢的时候，你能大致判断卡在哪一层——<b>第一步慢</b>是 DNS 或本地网络；<b>握手慢</b>是线路远或服务器忙；<b>等响应久</b>是后端查库慢；<b>响应回来了但页面还在转</b>，那是图片太大或前端渲染卡。<b>会分层定位问题的人，永远比只会“重启一下试试”的人值钱。</b></div>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="p4">
+  <div class="sec-head"><div class="sec-num">4</div><h2>单片机：让代码真的伸手去碰这个世界</h2></div>
+  <p class="sec-sub">电脑只会算，单片机还会“摸”和“动”。</p>
+
+  <div class="card">
+    <div class="analogy"><b>一句话：</b>单片机是一台<b>只有指甲盖大、几块钱、能连续跑十年不关机</b>的小电脑。它内存小得可怜，但有一个电脑没有的本事——<b>它的“脚”能直接输出电压，能读到电压</b>。所以它能点灯、能转电机、能读温度。</div>
+
+    <div class="kv">
+      <div class="mini"><h5>单片机（MCU）</h5><p>几块到几十块。内存几 KB 到几 MB。跑裸机程序或 RTOS。特点：实时、省电、稳定。代表：STM32、ESP32、51 系列、Arduino。</p></div>
+      <div class="mini"><h5>树莓派（SBC）</h5><p>几百块。跑完整 Linux，能装 Python、OpenCV、跑小模型。特点：能干活但费电、启动慢。适合“要算力又要接硬件”的场景。</p></div>
+    </div>
+
+    <div class="term">
+      <span class="term-name">GPIO<span class="en">通用输入输出引脚</span></span>
+      <div class="term-body">芯片上一根<b>能读能写的“电脚”</b>。写 1 输出 3.3V，写 0 输出 0V；反过来也能读外面是高还是低。<b>作用：</b>这是单片机和物理世界握手的地方。点 LED、读按键、驱动继电器（进而控制 220V 电器）、读传感器开关，全靠它。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">ADC<span class="en">模数转换</span></span>
+      <div class="term-body">现实世界是<b>连续的</b>（电压可以从 0 慢慢升到 3.3V），芯片只认<b>离散的数字</b>。ADC 就是把 1.65V 翻译成“2048”的那个翻译官。<b>作用：</b>读电池电量、读电位器旋钮、读光敏电阻、采集麦克风波形。没有 ADC，单片机就是聋子瞎子。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">DAC<span class="en">数模转换</span></span>
+      <div class="term-body">反过来，把数字变成电压。<b>作用：</b>输出音频、输出可控的模拟电压。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">PWM<span class="en">脉宽调制</span></span>
+      <div class="term-body">只会开和关，怎么调“半亮”？<b>快速开关</b>——一秒钟开关一千次，开的时间占 30%，看起来就是 30% 的亮度。<b>作用：</b>调 LED 亮度、调电机转速、控制舵机转到某个角度、控制加热功率。便宜又高效。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">UART / I2C / SPI<span class="en">三种通信口</span></span>
+      <div class="term-body">单片机和别的芯片“说话”的三种方式。<br>
+      <b>UART</b>：两根线，一对一，简单可靠（调试打印、GPS 模块、蓝牙模块）。<br>
+      <b>I2C</b>：两根线，能挂一串设备，每台有地址（温湿度传感器、屏幕、EEPROM）。<br>
+      <b>SPI</b>：四根线，速度快（屏幕、Flash、SD 卡）。<br><b>作用：</b>让一颗几块钱的芯片能接上几十种传感器和外设。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">中断<span class="en">Interrupt</span></span>
+      <div class="term-body">程序正在跑，突然按键按下/串口来数据/定时到点，硬件<b>强行打断</b>，跳去处理，处理完回来接着跑。<b>作用：</b>不用死等。没有中断，单片机只能“一直盯着按钮看”，什么都干不了。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">定时器<span class="en">Timer</span></span>
+      <div class="term-body">硬件闹钟，精确到微秒。<b>作用：</b>精确定时、产生 PWM、测量脉冲宽度（比如超声波测距）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">看门狗<span class="en">Watchdog</span></span>
+      <div class="term-body">一条<b>定时喂的狗</b>。程序正常就每隔一会儿喂它一次；程序卡死了没喂，狗就咬人——<b>自动重启芯片</b>。<b>作用：</b>无人值守设备（电表、摄像头、汽车 ECU）的救命符。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">固件 / 烧录<span class="en">Firmware / Flash</span></span>
+      <div class="term-body">写进芯片里的程序叫固件，把它写进去的过程叫烧录。<b>作用：</b>单片机的程序是“焊死”在设备里的，不像电脑能随便装软件——所以升级固件（OTA）是一件很谨慎的事。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">RTOS<span class="en">实时操作系统，如 FreeRTOS</span></span>
+      <div class="term-body">单片机上的“小操作系统”，让多个任务<b>看起来同时在跑</b>（读传感器、刷屏幕、发数据），并且保证高优先级任务到点就能执行。<b>作用：</b>程序复杂到一定程度，裸机写不下去，就得上它。</div>
+    </div>
+
+    <div class="use"><b>用在哪（你身边全是）：</b>
+      <br>· 电饭煲：温度 ADC + 继电器控制 + 定时器 + 保温逻辑
+      <br>· 电动牙刷：PWM 调马达振动频率、按键中断、低功耗待机几个月
+      <br>· 共享单车锁：4G 模块（UART）+ GPS + 电机锁 + 电池电量 ADC
+      <br>· 汽车：一辆车里几十上百个单片机，管气囊、ABS、车窗、空调
+      <br>· <b>你的困倦检测项目做成产品</b>：摄像头 + 树莓派跑人脸关键点，判定闭眼超时就通过 GPIO 拉响蜂鸣器、PWM 调震动马达强度、串口通知座椅振动模块——这些“动作”都得靠单片机落地。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="p5">
+  <div class="sec-head"><div class="sec-num">5</div><h2>AI：机器到底是怎么“学会”的</h2></div>
+  <p class="sec-sub">先把三个最容易搞混的词分开，后面全都通了。</p>
+
+  <div class="card">
+    <div class="kv">
+      <div class="mini"><h5>模型 = 一个巨大的函数</h5><p>输入一张图，输出“这是猫，87%”。它内部有几十亿个可以调的旋钮（参数）。它就是一堆数学运算，一点都不神秘。</p></div>
+      <div class="mini"><h5>训练 = 调旋钮</h5><p>给它几百万个例子，它先瞎猜，猜错就按“错得多离谱”往回拧旋钮，重复几百万次。这个过程极慢极贵。</p></div>
+    </div>
+    <div class="mini" style="margin-top:12px"><h5>推理 = 用调好的模型</h5><p>旋钮定死不动了，直接拿去答题。你平时用 AI 聊天、拍照识物，全是推理。<b>推理不需要显卡集群，训练才需要。</b></p></div>
+
+    <div class="term" style="margin-top:18px">
+      <span class="term-name">参数 / 权重<span class="en">Parameters / Weights</span></span>
+      <div class="term-body">模型里的那些数字。几十亿到上万亿个。<b>它们就是“学到的东西”本身。</b>所谓“7B 模型”，就是 70 亿个参数。参数越多一般越聪明，但也越慢越贵。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">数据集 / 标注<span class="en">Dataset / Label</span></span>
+      <div class="term-body">例子本身，以及“正确答案”。一张图 + “这是猫”就是一条带标注的数据。<b>作用：</b>模型只能从数据里学，数据烂，模型一定烂。<b>行业真相：AI 项目 80% 的时间在做数据，不是在做模型。</b></div>
+    </div>
+    <div class="term">
+      <span class="term-name">特征<span class="en">Feature</span></span>
+      <div class="term-body">数据里“有用的那部分信息”。以前靠人手工设计（量眼睛多宽、数边缘），现在深度学习自己从原始像素里学。<b>作用：</b>决定模型的上限。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">损失函数<span class="en">Loss Function</span></span>
+      <div class="term-body">一张<b>打分表</b>，算“你答的离标准答案差多远”。差得越多，loss 越大。<b>作用：</b>训练的唯一指挥棒。loss 不降，说明模型没学到东西或者数据有问题。看懂 loss 曲线是调模型的入门功。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">梯度下降 / 学习率<span class="en">Gradient Descent / Learning Rate</span></span>
+      <div class="term-body">想象你被蒙眼放在山上，要走到谷底。你只能用脚探一下哪边更低，然后往那边迈一步——这就是梯度下降。<b>学习率</b>就是步子大小：太大直接跨过谷底来回震荡，太小学到天荒地老，还可能卡在半山腰的坑里（局部最优）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">反向传播<span class="en">Backpropagation</span></span>
+      <div class="term-body">从“答案错在哪”往回倒推，算出<b>每一个旋钮该负多少责任、该往哪边拧多少</b>。<b>作用：</b>这是深度学习能成立的数学基础。没有它，几十亿参数根本不知道该调哪个。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">过拟合 / 欠拟合<span class="en">Overfit / Underfit</span></span>
+      <div class="term-body"><b>过拟合</b>=把练习册答案背下来了，一换新题就废（训练集 99%，真实场景 60%）。<b>欠拟合</b>=太笨，练习册都没学会。<b>对策：</b>过拟合就加数据、加正则化、dropout、早停；欠拟合就换更大模型、训更久、加特征。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">训练集 / 验证集 / 测试集</span>
+      <div class="term-body">练习题 / 模拟考 / 高考。<b>作用：</b>用没见过的题检验真本事。如果拿考试题当练习题，考 100 分也毫无意义——这是新手最常犯的错（数据泄漏）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">监督 / 无监督 / 自监督 / 强化学习</span>
+      <div class="term-body"><b>监督</b>：每题都有答案（识别猫狗）。<b>无监督</b>：没答案，自己找规律（把用户分成几群）。<b>自监督</b>：从数据本身挖答案，比如“遮住一个词让模型猜”——大模型预训练就是这么干的。<b>强化学习</b>：不给答案，只给奖励，自己试错（下围棋、机器人走路）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">神经网络 / 激活函数<span class="en">Neural Network / ReLU</span></span>
+      <div class="term-body">一层层的“神经元”，每层做的事就是<b>加权求和 + 过一下激活函数</b>。激活函数（如 ReLU：负数变 0，正数不变）看着很傻，但它是关键——没有它，堆一万层也只等价于一层，学不会任何复杂东西。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">CNN 卷积网络<span class="en">Convolutional Neural Network</span></span>
+      <div class="term-body">拿一个<b>小窗口</b>在图上滑动扫，先找出边缘，再拼出纹理，再拼出形状，最后拼出“猫脸”。<b>作用：</b>图像识别的老功臣，人脸识别、车牌识别、工业质检全靠它。你项目里如果不用 dlib 的现成关键点，多半就是训一个 CNN。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">RNN / LSTM<span class="en">循环网络</span></span>
+      <div class="term-body">按顺序一个字一个字读，边读边记。<b>问题：</b>读到后面忘了前面，而且没法并行（必须一个接一个）。<b>这就是 Transformer 出现的原因。</b></div>
+    </div>
+    <div class="term">
+      <span class="term-name">Embedding<span class="en">嵌入 / 向量化</span></span>
+      <div class="term-body">把词、句子、图片变成<b>一串数字坐标</b>，意思相近的坐标就靠得近。“猫”和“小猫”距离近，“猫”和“混凝土”距离远。<b>作用：</b>这是“语义”能被计算的前提。搜索、推荐、聚类、大模型，全靠它。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">微调 / 蒸馏 / 量化<span class="en">Fine-tune / Distill / Quantize</span></span>
+      <div class="term-body"><b>微调</b>：拿现成的大模型，用自己的数据再教一下，让它变成“你们行业的专家”。<b>蒸馏</b>：让小的学大的，把本事压缩过去。<b>量化</b>：把参数从 16 位小数压成 4 位整数，模型小一半、快一倍，稍微笨一点点。<b>作用：</b>都是为了让模型能塞进手机、能便宜地跑。</div>
+    </div>
+
+    <h4 style="font-size:15px;margin:22px 0 10px">制作办法：做一个 AI 功能，就这 7 步（做饭版）</h4>
+    <div class="flow">
+      <div class="step">1 想清楚<br><small>到底解决什么问题</small></div><span class="arw">→</span>
+      <div class="step">2 攒数据<br><small>+ 人工标注</small></div><span class="arw">→</span>
+      <div class="step">3 选架构<br><small>用现成的还是自己训</small></div><span class="arw">→</span>
+      <div class="step">4 训练<br><small>GPU 上跑，盯 loss</small></div><span class="arw">→</span>
+      <div class="step">5 评估<br><small>没见过的数据上测</small></div><span class="arw">→</span>
+      <div class="step">6 部署<br><small>服务器/手机/单片机</small></div><span class="arw">→</span>
+      <div class="step">7 监控迭代<br><small>效果掉了就补数据</small></div>
+    </div>
+    <div class="warn"><b>第 1 步和第 5 步最容易被跳过，也最容易翻车。</b>“要解决什么问题”没想清楚，做完发现没人用；“怎么算成功”没定义，就只能拍脑袋说“感觉还行”。真实项目里还要算：<b>误报一次的成本</b>（误判司机困倦=频繁误报警=用户关掉功能）比准确率重要得多。</div>
+
+    <div class="use"><b>用在哪：</b>手机人脸解锁（CNN）、输入法联想（语言模型）、短视频推荐（embedding + 排序模型）、拍照翻译（OCR + 翻译模型）、垃圾短信拦截（分类）、工厂质检（异常检测）、医院的影像辅助诊断。<b>本质上就三件事：分类、回归（猜一个数）、生成。</b></div>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="p6">
+  <div class="sec-head"><div class="sec-num">6</div><h2>Transformer：现在所有大模型的同一个地基</h2></div>
+  <p class="sec-sub">ChatGPT、翻译、代码补全、你手机里的输入法联想——背后是同一个结构。</p>
+
+  <div class="card">
+    <div class="analogy"><b>它解决了什么问题：</b>以前的 RNN 像<b>一个人一个字一个字读</b>，读到句末已经忘了句首，还没法并行（必须排队）。Transformer 让<b>一句话里所有词同时互相看一遍</b>，谁重要就看谁多一点。既能并行（快），又能记住远距离关系（准）。<br><br><b>核心比喻：一场圆桌会议。</b>每个词都是参会者，手上有一张问题卡（Query）、一个名牌（Key）、一份发言稿（Value）。每个人拿自己的问题去对所有人的名牌，谁对得上就重点听谁的发言。<b>“它”指谁？——问一圈，发现“小猫”对得最上，那就听“小猫”的。</b>这就是“消歧”。</div>
+
+    <h4 style="font-size:15px;margin:22px 0 12px">一句话从进门到出门，走这 9 步</h4>
+
+    <div class="flow">
+      <div class="step">1 分词<br><small>切成 token</small></div><span class="arw">→</span>
+      <div class="step">2 查表<br><small>embedding 向量</small></div><span class="arw">→</span>
+      <div class="step">3 加位置<br><small>补上顺序</small></div><span class="arw">→</span>
+      <div class="step">4 自注意力<br><small>Q K V</small></div><span class="arw">→</span>
+      <div class="step">5 多头<br><small>多角度看</small></div><span class="arw">→</span>
+      <div class="step">6 残差+归一化<br><small>不跑偏</small></div><span class="arw">→</span>
+      <div class="step">7 前馈网络<br><small>逐个加工</small></div><span class="arw">→</span>
+      <div class="step">8 堆 N 层<br><small>12/32/80 层</small></div><span class="arw">→</span>
+      <div class="step">9 算下一个词<br><small>概率分布</small></div>
+    </div>
+
+    <div class="term" style="margin-top:6px">
+      <span class="term-name">Token / 分词器<span class="en">Tokenizer</span></span>
+      <div class="term-body">模型不认字，只认编号。分词器把“今天天气不错”切成 <span class="mono">["今天","天气","不错"]</span> 再换成 <span class="mono">[2345, 889, 102]</span>。<b>作用：</b>token 是模型的“最小计量单位”，也是<b>你付钱的计算单位</b>——中文一个字常常就是一个 token，所以中文比英文贵。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">Embedding 层<span class="en">嵌入</span></span>
+      <div class="term-body">一张巨大的表，每个 token 编号对应一个几千维的向量。<b>作用：</b>把“符号”变成“坐标”，让语义可以算加减。“国王 − 男人 + 女人 ≈ 女王”就是这个空间里的真实几何关系。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">位置编码<span class="en">Positional Encoding</span></span>
+      <div class="term-body">因为所有词是<b>同时</b>进去的，模型不知道谁在前谁在后。“猫咬狗”和“狗咬猫”对它来说会是同一堆东西。<b>作用：</b>给每个位置发一个“座位号”，顺序信息才不丢。现代模型多用 RoPE（旋转位置编码），效果更好。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">自注意力 Q / K / V<span class="en">Self-Attention</span></span>
+      <div class="term-body">每个词算出三个向量：<b>Q 我要找什么</b>、<b>K 我能提供什么</b>、<b>V 我实际的内容</b>。<br>
+      然后把 Q 和所有词的 K 做点积 → 得到相似度 → 归一化成权重（softmax）→ 用权重把所有 V 加权求和。<br><b>白话：</b>“因为”这个词问“我指代谁？”，跟“小猫”的 K 匹配度最高，于是把 80% 的注意力放在“小猫”身上。<b>作用：</b>让模型自己决定该看哪儿，而不是靠人写规则。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">多头注意力<span class="en">Multi-Head Attention</span></span>
+      <div class="term-body">同时开 8 个、32 个“视角”并行做上面那件事。有的头专门盯语法主谓，有的盯指代，有的盯情绪。<b>作用：</b>一个角度看问题容易漏，多角度同时看就全面了。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">残差连接 + LayerNorm<span class="en">Residual + Normalization</span></span>
+      <div class="term-body">输出 = 输入 + 这一层的改动；再做一次数值归一化。<b>作用：</b>保证信息不会在层层传递中被磨没，也不会数值爆炸。这是能堆几十上百层的前提——没有它，深了必然训练失败。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">前馈网络 FFN<span class="en">Feed Forward Network</span></span>
+      <div class="term-body">对每个位置单独做一次“升维 → 激活 → 降维”的加工。<b>作用：</b>注意力负责“交流信息”，FFN 负责“各自思考消化”。模型里一大半参数都在这里，很多人认为这里是“知识存储”的地方。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">三种形态<span class="en">Encoder / Decoder</span></span>
+      <div class="term-body"><b>只用编码器（BERT 类）</b>：擅长“理解”——分类、抽取、搜索排序。<br>
+      <b>只用解码器（GPT / Llama / Qwen）</b>：擅长“往下写”——聊天、写代码、推理。<b>现在主流全是这一类。</b><br>
+      <b>编码器+解码器（T5、翻译模型）</b>：输入一段、输出一段，适合翻译、摘要、语音识别。</div>
+    </div>
+
+    <h4 style="font-size:15px;margin:22px 0 10px">这些词你必须知道，不然聊 AI 会露怯</h4>
+    <div class="term">
+      <span class="term-name">上下文窗口<span class="en">Context Window</span></span>
+      <div class="term-body">一次最多能塞多少 token（比如 128K）。<b>作用：</b>决定它能“一次看多长的材料”。为什么长文档贵？因为自注意力的计算量是<b>长度的平方</b>——长度翻倍，计算量四倍。这是 Transformer 最大的软肋。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">KV Cache<span class="en">键值缓存</span></span>
+      <div class="term-body">生成时，前面算过的 K 和 V 存起来不重算。<b>作用：</b>没有它，每多吐一个字都要把全文重算一遍，根本没法用。代价是吃显存——<b>大模型服务贵，一大半贵在这上面的显存</b>。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">温度 / top-p<span class="en">Temperature / Nucleus Sampling</span></span>
+      <div class="term-body">控制“下一个词”抽签时有多放飞。温度低（0.2）→ 只挑最可能的，稳定但死板；温度高（1.0+）→ 更敢挑冷门词，有创意但容易胡说。<b>作用：</b>写代码调低，写文案调高。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">幻觉<span class="en">Hallucination</span></span>
+      <div class="term-body">一本正经地编。原因很朴素：<b>它本质是在“猜下一个最像的词”，不是在查数据库。</b>它没有“我不知道”这个强约束，所以会顺着语言惯性编下去。<b>对策：</b>让它先检索资料再回答（RAG）、允许调用工具/搜索、要求给出来源、关键结论人工复核。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">RAG<span class="en">检索增强生成</span></span>
+      <div class="term-body">先从你的资料库里<b>搜出相关段落</b>，再把这几段塞进提示词让模型基于它们回答。<b>作用：</b>让模型说“你们公司的事”，还能大幅减少幻觉、方便更新知识（不用重训模型）。企业落地大模型，90% 用的是这条路。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">MoE<span class="en">混合专家</span></span>
+      <div class="term-body">模型里有很多“专家小组”，每次只叫醒其中两三个干活。<b>作用：</b>参数总量很大（知识多），但每次只算一小部分（省算力）。现在很多大模型都用这招。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">Prompt / Agent<span class="en">提示词 / 智能体</span></span>
+      <div class="term-body"><b>Prompt</b> 就是你怎么问，问得好坏能差出一个量级。<b>Agent</b> 是让模型自己拆步骤、调工具、看结果、再调整，循环把活干完——从“问答机”变成“能办事的实习生”。</div>
+    </div>
+
+    <div class="use"><b>用在哪：</b>翻译（同一个结构换数据就行）、代码补全、客服机器人、会议纪要与摘要、法律合同比对、医疗报告初筛、手机输入法下一词预测、图片描述生成（多模态）、语音转文字（编码器+解码器）。<b>它之所以叫“地基”，是因为换数据、换规模就能干几乎任何“从一段内容到另一段内容”的活。</b></div>
+  </div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="p7">
+  <div class="sec-head"><div class="sec-num">7</div><h2>数据仓库：把一堆流水账，变成能拍板的数字</h2></div>
+  <p class="sec-sub">这是把前面所有东西攒下来的数据，真正变成钱的一步。</p>
+
+  <div class="card">
+    <div class="analogy"><b>先分清两个场景，这是全章的关键：</b><br>
+    <b>OLTP（联机交易）= 前台收银台。</b>一次只动一两行（扣库存、加订单），要求毫秒级、绝不出错、几千人同时用。MySQL / PostgreSQL 干这个。<br>
+    <b>OLAP（联机分析）= 后台算账。</b>一次扫几千万行做汇总（“上个月华东区退货率多少”），要求吞吐量、不在乎慢几秒。<br><br><b>为什么不直接在收银库上算报表？</b>因为一条大查询会把数据库的 CPU 和 IO 全占了，收银台就卡死——相当于老板在大堂搬张桌子算账，客人全堵门口。<b>所以必须把数据搬到一个专门的仓库里去算。这就是数据仓库存在的唯一理由。</b></div>
+
+    <div class="term">
+      <span class="term-name">ETL / ELT<span class="en">抽-洗-装</span></span>
+      <div class="term-body"><b>E</b> 抽取（从业务库、日志、Excel、第三方 API 拿数据）、<b>T</b> 清洗转换（统一字段、去重、补空值、换算口径）、<b>L</b> 装载（写进仓库）。<br>现在多是 <b>ELT</b>：先原样装进去，再用仓库的算力洗——因为云仓库算力强，先存后洗更灵活、能留原始痕迹。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">分层：ODS → DWD → DWS → ADS</span></span>
+      <div class="term-body">这是数据仓库的骨架，把“做菜的工序”拆开，每层只干一件事。不分层的后果是：一张报表一套 SQL，逻辑散了，谁也说不清哪个数对。</div>
+    </div>
+
+    <div class="pyramid">
+      <div style="width:52%"><b>ADS 应用层</b>　直接喂给看板 / 报表 / 接口的结果表</div>
+      <div style="width:68%"><b>DWS 汇总层</b>　按天、按用户、按商品轻度聚合，避免重复算</div>
+      <div style="width:84%"><b>DWD 明细层</b>　清洗后的干净明细：谁、何时、在哪个店、买了什么、多少钱</div>
+      <div style="width:100%"><b>ODS 原始层</b>　从业务系统原样搬过来的“原始档案”，不加工、可回溯</div>
+    </div>
+
+    <div class="term">
+      <span class="term-name">事实表<span class="en">Fact Table</span></span>
+      <div class="term-body">记录“<b>发生了什么</b>”的表：一行就是一次事件，带一堆数字（金额、数量、时长）。<b>作用：</b>所有指标都从它算出来。它会长得飞快（一天几千万行）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">维度表<span class="en">Dimension Table</span></span>
+      <div class="term-body">描述“<b>谁、什么、哪里、何时</b>”的表：用户表、商品表、门店表、日期表。<b>作用：</b>让你能“按省份看”“按品类看”“按新老客看”。事实表只有 ID，靠它翻译成人能看懂的名字。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">星型模型 / 雪花模型<span class="en">Star / Snowflake Schema</span></span>
+      <div class="term-body">一张事实表放中间、一圈维度表围着，像颗星星（星型）；维度表再拆细就是雪花。<b>作用：</b>查得快、结构清晰。星型是数仓里最常用的形状。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">缓慢变化维<span class="en">SCD</span></span>
+      <div class="term-body">用户去年在杭州、今年搬到上海，去年的订单该算杭州还是上海？<b>作用：</b>决定“历史要不要保留当时的真相”。最常见的做法是留两行（生效时间区间），这样既能按当时看，也能按现在看。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">指标 / 口径<span class="en">Metric / Definition</span></span>
+      <div class="term-body"><b>口径就是“这个数到底怎么算”的书面约定。</b>“活跃用户”是登录算、打开算、还是下单算？“GMV”含不含退款、含不含运费？<b>作用：</b>口径不统一，两个部门能报出两个数，然后在会上吵两小时。<b>数据仓库最值钱的产出，往往不是表，而是统一口径。</b></div>
+    </div>
+    <div class="term">
+      <span class="term-name">数据质量<span class="en">Data Quality</span></span>
+      <div class="term-body">空值、重复、手机号写成 11 个 1、金额是负数、日期跑到 2099 年。<b>作用：</b>脏数据进去，垃圾结论出来（Garbage in, garbage out）。所以每层都要有校验规则和告警。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">调度 / DAG<span class="en">Scheduling</span></span>
+      <div class="term-body">每天凌晨 2 点自动开跑，而且“A 表跑完才能跑 B 表”这种依赖要自动管——这个依赖关系就是有向无环图（DAG）。<b>作用：</b>没有调度，几万个任务靠人点，天亮也跑不完。工具：Airflow、DolphinScheduler、dbt。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">血缘<span class="en">Lineage</span></span>
+      <div class="term-body">“这个报表的数是从哪几张表、哪个字段算来的”的完整链路图。<b>作用：</b>出了问题能一路往上追；要改逻辑能知道会影响谁（不然改一个字段崩十个看板）。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">数据湖 / 湖仓一体<span class="en">Data Lake / Lakehouse</span></span>
+      <div class="term-body"><b>湖</b>：把原始数据（日志、图片、JSON、埋点）先原样倒进去，便宜、能装一切，但容易变成“数据沼泽”（倒进去没人管）。<b>湖仓一体</b>：在湖上套一层仓库的管理规范（表格式、schema、事务），兼具便宜和好用。现在新建基本都走这条。</div>
+    </div>
+    <div class="term">
+      <span class="term-name">实时数仓<span class="en">Kafka + Flink</span></span>
+      <div class="term-body">不用等凌晨跑批，数据一来就流过去算，秒级出结果。<b>作用：</b>大屏实时成交额、风控拦截、直播看板。代价是复杂度和成本高得多，不是所有场景都值得。</div>
+    </div>
+
+    <h4 style="font-size:15px;margin:22px 0 10px">从 0 搭一个数据仓库，9 步</h4>
+    <div class="flow">
+      <div class="step">1 问需求<br><small>到底要看什么</small></div><span class="arw">→</span>
+      <div class="step">2 盘数据源<br><small>库/日志/第三方</small></div><span class="arw">→</span>
+      <div class="step">3 定指标口径<br><small>写进文档</small></div><span class="arw">→</span>
+      <div class="step">4 设计分层与模型<br><small>事实+维度</small></div><span class="arw">→</span>
+      <div class="step">5 搭同步管道<br><small>全量+增量 CDC</small></div><span class="arw">→</span>
+      <div class="step">6 清洗校验<br><small>空值/重复/异常</small></div><span class="arw">→</span>
+      <div class="step">7 配调度<br><small>依赖+告警</small></div><span class="arw">→</span>
+      <div class="step">8 出看板<br><small>BI 工具</small></div><span class="arw">→</span>
+      <div class="step">9 治理<br><small>权限/质量/成本</small></div>
+    </div>
+    <div class="use"><b>举一个具体的例子：算 GMV（成交总额）</b>
+      <br>先把问题问清楚：<b>拍下就算，还是付款才算？退款要不要扣？跨天支付记在哪天？含不含运费？</b>这四个问题不定下来，五个人能算出五个数。
+      <br>定好之后写进 DWD 的口径文档，DWS 按“天 × 品类 × 地区”预聚合，ADS 出“昨日 GMV 环比”的看板。全公司都读同一张 DWS，<b>口径才不会打架</b>。
+      <br><b>这就是数仓真正的价值：不是存数据，是让所有人对同一件事有同一个数。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="p8">
+  <div class="sec-head"><div class="sec-num">8</div><h2>串起来：七块知识怎么在同一个产品里各就各位</h2></div>
+  <p class="sec-sub">用“驾驶员疲劳监测”这条线走一遍——正好也是你在做的方向。</p>
+
+  <div class="card">
+    <div class="flow">
+      <div class="step">摄像头<br><small>光→电，ADC</small></div><span class="arw">→</span>
+      <div class="step">传输<br><small>RTSP / USB</small></div><span class="arw">→</span>
+      <div class="step">预处理<br><small>OpenCV + dlib</small></div><span class="arw">→</span>
+      <div class="step">判定<br><small>EAR 阈值 / 模型</small></div><span class="arw">→</span>
+      <div class="step">执行<br><small>单片机：蜂鸣+震动</small></div><span class="arw">→</span>
+      <div class="step">上报<br><small>MQTT / HTTPS</small></div><span class="arw">→</span>
+      <div class="step">入库<br><small>Kafka→数仓</small></div><span class="arw">→</span>
+      <div class="step">回训<br><small>补标注，发新版</small></div>
+    </div>
+
+    <ol>
+      <li><b>组成原理</b>：摄像头里的 CMOS 把光转成电信号，靠 ADC 变成数字像素；树莓派/工控机用 CPU 做通用逻辑、用 GPU/NPU 做并行加速。内存够不够，直接决定能不能跑 30 帧。</li>
+      <li><b>数据结构</b>：一帧图像在内存里就是一个大数组；68 个关键点存成数组；为了防抖动，用<b>队列</b>存最近 30 帧算滑动平均；多路摄像头排任务用<b>堆</b>按优先级调度。</li>
+      <li><b>计算机网络</b>：网络摄像头通过 RTSP/HTTP 把视频流推过来；报警事件用 MQTT/HTTPS 上报云端；手机 App 靠 WebSocket 或推送拿到实时告警。延迟高，报警就晚半秒。</li>
+      <li><b>单片机</b>：判定为疲劳 → GPIO 拉高蜂鸣器、PWM 调震动马达强度、串口通知座椅模块；按键用中断响应；看门狗防止长期运行死机。这一层是“算法变成动作”的最后一厘米。</li>
+      <li><b>AI</b>：如果只做 EAR 阈值，那还是规则；加上 CNN 做眼部状态分类、或做人脸检测定位，才算 AI。训练时盯 loss、防过拟合，上线时盯误报率——<b>误报一次，司机就把功能关了，这比准确率更致命。</b></li>
+      <li><b>Transformer</b>：如果想做“驾驶行为时序分析”（连续 5 分钟的头部姿态 + 眼动 + 车道偏移），Transformer 能同时看到整段序列的关联，比逐帧判断准得多；代价是算力和延迟。</li>
+      <li><b>数据仓库</b>：每天的检测记录、误报标记、车型、驾驶员 ID、路段，进 Kafka 落 ODS，清洗成 DWD，汇总成“某车型每百公里误报次数”的 DWS，最后出 ADS 看板。产品经理靠这张表决定下一版改什么。</li>
+    </ol>
+    <div class="analogy"><b>看明白了吗：</b>没有任何一块知识是孤立的。摄像头是物理，传到电脑是网络，处理是数据结构和算法，判断是 AI，动作是单片机，复盘是数仓。<b>你能把这条线讲通，就比会背十个名词的人强得多。</b></div>
+  </div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section id="p9">
+  <div class="sec-head"><div class="sec-num">9</div><h2>最常见的一批热词，一句话说清</h2></div>
+  <p class="sec-sub">下面这些你在招聘 JD、技术群、项目会上天天见，不懂会一直插不上话。</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>词</th><th>大白话</th><th>你在哪见过 / 为什么有它</th></tr></thead>
+    <tbody>
+      <tr><td>云服务器</td><td>别人机房里的电脑，你按小时租</td><td>不用自己买机器、拉网线，点点鼠标就有一台</td></tr>
+      <tr><td>容器 / Docker</td><td>把程序连它的运行环境一起打包成箱子，到哪都能跑</td><td>解决“我这能跑，你那跑不了”</td></tr>
+      <tr><td>K8s</td><td>管几千个容器的调度员：谁挂了重启谁，忙了自动加机器</td><td>大公司服务几十上百个，人工管不过来</td></tr>
+      <tr><td>微服务</td><td>把一个大系统拆成十几个小服务，各自独立上线</td><td>大团队并行开发、局部故障不拖垮全局</td></tr>
+      <tr><td>API</td><td>系统对外的“点菜窗口”，给你几个固定入口</td><td>调支付、发短信、接大模型，都是调 API</td></tr>
+      <tr><td>SDK</td><td>别人写好的工具箱，你拿来直接用</td><td>接人脸识别、接地图，官方给个 SDK 就省一半活</td></tr>
+      <tr><td>Redis</td><td>放在内存里的“超快小本子”，专门存常用数据</td><td>排行榜、验证码、缓存，数据库慢它就顶上去</td></tr>
+      <tr><td>Kafka</td><td>一个巨大的传送带，数据先扔上去，谁要谁来取</td><td>秒杀削峰、日志采集、实时数仓的入口</td></tr>
+      <tr><td>负载均衡</td><td>门口的迎宾，把客人分给不忙的服务员</td><td>一台服务器扛不住，就十台轮着来</td></tr>
+      <tr><td>分布式</td><td>一台干不完的活，拆给几百台一起干</td><td>数据量、并发量超过单机上限时的唯一出路</td></tr>
+      <tr><td>CAP</td><td>一致性、可用性、分区容忍，三个不能全占</td><td>银行选一致，短视频选可用，你得知道自己在换什么</td></tr>
+      <tr><td>SQL / NoSQL</td><td>SQL 是表格+关系查询；NoSQL 是更灵活但更“裸”的存法</td><td>强关系用 SQL，海量键值/文档用 NoSQL</td></tr>
+      <tr><td>索引</td><td>书的目录，没有它只能一页页翻</td><td>慢查询的第一嫌疑人和第一解药</td></tr>
+      <tr><td>并发 / 并行</td><td>并发=很多人轮流用同一个窗口；并行=真的有好几个窗口同时开</td><td>聊天“同时”很多人用是并发；GPU 是并行</td></tr>
+      <tr><td>死锁</td><td>两个人各拿一半，谁都要对方那半，谁也不松手</td><td>并发编程的经典事故，程序会直接卡住</td></tr>
+      <tr><td>内存泄漏</td><td>用完了不还，越用越少，最后撑爆</td><td>服务跑几天就崩，重启就好——典型症状</td></tr>
+      <tr><td>GC</td><td>自动垃圾回收，帮你把不用的内存清掉</td><td>Java/Go 有它，省心但会“卡一下”</td></tr>
+      <tr><td>灰度发布</td><td>先给 1% 用户上新版本，没事再全量</td><td>避免一个 bug 让所有人一起崩</td></tr>
+      <tr><td>大数据 / Spark</td><td>几百台机器一起算几十 TB，一台干不动的活</td><td>离线跑批、全量用户画像</td></tr>
+      <tr><td>流批一体</td><td>实时和离线的逻辑用同一套代码写</td><td>不然同一指标要维护两套代码，必对不上</td></tr>
+      <tr><td>大模型 / LLM</td><td>参数极多、靠海量文本喂出来的模型</td><td>能力来自规模，不是来自写了什么规则</td></tr>
+      <tr><td>Prompt / 提示词</td><td>你怎么跟它说话</td><td>问法不同，效果差一个档次</td></tr>
+      <tr><td>微调 / RAG</td><td>微调=再教一遍；RAG=先查资料再回答</td><td>要新知识用 RAG，要改风格/专业话术用微调</td></tr>
+      <tr><td>Agent</td><td>会自己拆步骤、调工具的 AI</td><td>从“问答”到“办事”的那一步</td></tr>
+      <tr><td>边缘计算</td><td>数据在原地就算，不来回传</td><td>摄像头本地识别，省带宽、保隐私、低延迟</td></tr>
+      <tr><td>IoT</td><td>让一堆设备都能联网上报</td><td>电表、空调、共享单车、农机</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section id="p10">
+  <div class="sec-head"><div class="sec-num">10</div><h2>如果你要学，按这个顺序</h2></div>
+  <p class="sec-sub">不按难度，按“能不能马上用上”排序。</p>
+
+  <div class="card">
+    <ol>
+      <li><b>先补数据结构 + 网络。</b>这两块投入产出最高。知道 B+ 树能解释 90% 的数据库慢查询；知道四层模型能解释 90% 的“网不好”。</li>
+      <li><b>再补组成原理，但只补到你够用为止。</b>会讲清“缓存/内存/硬盘/GPU 为什么这么重要”就够，不用会画电路。</li>
+      <li><b>单片机和 AI 挑一个当手感。</b>想摸硬件就先点灯、读传感器、做个小车；想搞算法就先跑通一个分类任务，看 loss 掉下来。别两个同时学。</li>
+      <li><b>Transformer 别从公式入手。</b>先把“每个词开会、投票决定听谁”这个画面记住，再回头看 Q/K/V，你会发现公式只是把这个画面写成数学。</li>
+      <li><b>数仓放在最后但一定要学。</b>它是把技术变成“老板看得懂的数字”的那道桥，也是很多技术人往上走的分水岭。</li>
+    </ol>
+    <div class="analogy"><b>最后一句实话：</b>这些名词听起来吓人，拆开全是“为了省时间”“为了不出错”“为了让人看懂”这三种需求的产物。你只要能回答一个问题——<b>“这个东西如果不存在，会有什么麻烦？”</b>——你就真懂了。</div>
+  </div>
+</section>
+
+<div class="end">全文完 · 每个词都值得再问一句“为什么它必须存在”</div>
+
+</main>
+</div>
+</body>
+</html>
